@@ -1,0 +1,24 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+PROJECT(token VERSION 0.1.0)
+
+FIND_PACKAGE(eosio.cdt)
+
+SET(CONTRACT_NAME "token")
+SET(MAIN_SRC_NAME "alliancex.token")
+
+
+ADD_CONTRACT(
+    ${CONTRACT_NAME} ${CONTRACT_NAME}
+    ${CMAKE_CURRENT_SOURCE_DIR}/${MAIN_SRC_NAME}.cpp
+)
+
+ADD_CUSTOM_TARGET ( abi
+    COMMENT "Set recardian abi"
+    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMAND sh ../run_sed.sh ${CONTRACT_NAME}.abi ${CONTRACT_NAME}.abi.new
+    COMMAND rm ${CONTRACT_NAME}.abi
+    COMMAND mv ${CONTRACT_NAME}.abi.new ${CONTRACT_NAME}.abi
+    COMMAND python3 ../set_recardian.py ${CONTRACT_NAME}.abi
+)
+
+
